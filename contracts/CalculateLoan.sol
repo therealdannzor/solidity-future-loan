@@ -29,15 +29,15 @@ contract CalculateLoan {
 	// adjustRate changes the variable rate. This needs to be protected
 	// such that only entities within a whitelist can use it. Currently,
 	// only the owner of the contract is able to access the function.
-	function adjustRate(uint newRate) onlyPositiveRates(newRate) public {
+	function adjustRate(uint newRate) onlyPositiveRates(newRate) external {
 		annual_rate = newRate;
 	}
 
-	function getRate() public view returns (uint) {
+	function getRate() external view returns (uint) {
 		return annual_rate;
 	}
 
-	function calculateInterestFrom(uint principal, uint loanStartDate, uint loanEnd) external pure returns (uint) {
+	function calculateInterestFrom(uint principal, uint loanStartDate, uint loanEnd) external view returns (uint) {
 		uint dummyScalingFactor = 1000000; // due to no floats
 		uint timeSinceInDays = (loanEnd - loanStartDate) / (3600 * 24);
 		uint result = principal * dummyScalingFactor;
