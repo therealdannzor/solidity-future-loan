@@ -24,25 +24,41 @@ contract Storage {
 		calculatorAddr = _addr;
 	}
 
-	function setRate(uint newRate) public {
-		return ICalculateLoan(calculatorAddr).adjustRate(newRate);
-	}
-
 	function getRate() public view returns (uint) {
 		return ICalculateLoan(calculatorAddr).getRate();
 	}
 
 	function issueLoan(address borrower, uint amount) public {
-		uint currDate = now;
+		uint currDate = block.timestamp;
 		Borrower memory entry = Borrower(amount, currDate);
 		balance[borrower] = entry;
 		// keep track of all our loans
 		outstandingBalance += amount;
 	}
 
-	function getOutstanding(address borrower) public view returns (uint) {
-		uint principal = balance[borrower].amount;
+	// This function can be used by a third party API for a periodic update of debts.
+	// It is not optimal as of now to have to target each address individually but it
+	// demonstrates the principle.
+	function updateBorrower(address borrower) public returns (uint) {
+		uint debt = balance[borrower].amount;
 		uint fromDate = balance[borrower].fromDate;
-		return ICalculateLoan(calculatorAddr).calculateInterestFrom(principal, fromDate, now);
+		uint actualDate = block.timestamp;
+		uint newDebt = ICalculateLoan(calculatorAddr).calculateInterestFrom(debt, fromDate, actualDate);
+		if (newDebt > debt) {
+			balance[borrower].amount = newDebt;
+			return newDebt;
+		}
+
+		return 0;
+	}
+
+
+
+	function getDebtFor(address borrower) public view returns (uint) {
+		return balance[borrower].amount;
+	}
+
+	function totalCreditGiven() public view returns (uint) {
+		return outstandingBalance;
 	}
 }
