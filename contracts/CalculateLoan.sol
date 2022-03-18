@@ -37,19 +37,19 @@ contract CalculateLoan {
 		return annual_rate;
 	}
 
-	function calculateInterestFrom(uint principal, uint loanStartDate, uint loanEnd) public view returns (uint) {
+	function calculateInterestFrom(uint principal, uint loanStartDate, uint loanEnd) external pure returns (uint) {
 		uint dummyScalingFactor = 1000000; // due to no floats
 		uint timeSinceInDays = (loanEnd - loanStartDate) / (3600 * 24);
 		uint result = principal * dummyScalingFactor;
 		// not the most efficient gas wise
 		for (uint i=0; i < timeSinceInDays; i++) {
-			result += simpleMonthlyInterest(result);
+			result += simpleDailyInterest(result);
 		}
 		return result / dummyScalingFactor;
 	}
 
-	// simpleMonthlyInterest calculates the accrued daily interest payment
-	function simpleMonthlyInterest(uint principal) public view returns (uint) {
+	// simpleDailyInterest calculates the accrued daily interest payment
+	function simpleDailyInterest(uint principal) private view returns (uint) {
 		// denominator: days per year & normalize rate to percentage
 		return principal * annual_rate / (360 * 10000);
 	}
