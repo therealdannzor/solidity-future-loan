@@ -3,16 +3,23 @@ pragma solidity ^0.5.0;
 
 contract CalculateLoan {
 	address public owner;
+	address public contractAddr;
 
 	// variable interest rate (%) p.a. in basis points
 	uint public annual_rate;
 
 	constructor() public {
 		owner = msg.sender;
+		contractAddr = address(this);
 	}
 
-	modifier onlyBy(address _account) {
-		require(msg.sender != _account, "Only allowed accounts may call this function");
+	function getAddress() public view returns (address) {
+		return contractAddr;
+	}
+
+	// can be generalized for additional parties if needed
+	modifier onlyByOwner() {
+		require(msg.sender == owner, "Only allowed accounts may call this function");
 		_;
 	}
 
@@ -22,14 +29,14 @@ contract CalculateLoan {
 	}
 
 	modifier onlyLendingBegun(uint _loanStartDate) {
-		require(_loanStartDate < now, "Only allowed to calculate interest after loan has begun.");
+		require(_loanStartDate < block.timestamp, "Only allowed to calculate interest after loan has begun.");
 		_;
 	}
 
 	// adjustRate changes the variable rate. This needs to be protected
 	// such that only entities within a whitelist can use it. Currently,
 	// only the owner of the contract is able to access the function.
-	function adjustRate(uint newRate) onlyPositiveRates(newRate) external {
+	function adjustRate(uint newRate) onlyByOwner() onlyPositiveRates(newRate) external {
 		annual_rate = newRate;
 	}
 
