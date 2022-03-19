@@ -57,9 +57,9 @@ contract CalculateLoan {
 		return result / dummyScalingFactor;
 	}
 
-	// simpleDailyInterest calculates the accrued minutely interest payment
+	// simpleDailyInterest calculates the accrued minutely interest
 	function simpleInterestPerMin(uint principal) private view returns (uint) {
-		// denominator: minuters pear year and normalize rate to percentage
+		// denominator: minutes per year and normalize rate to percentage
 		return principal * annual_rate / (60 * 24 * 360 * 10000);
 	}
 
