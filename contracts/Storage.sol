@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 
 interface ICalculateLoan {
 	function calculateInterestFrom(uint principal, uint loanStartDate, uint loanEnd)
-	external view returns (uint);
+	external returns (uint);
 
 	function getRate() external view returns (uint);
 
@@ -30,8 +30,7 @@ contract Storage {
 
 	function issueLoan(address borrower, uint amount) public {
 		uint currDate = block.timestamp;
-		Borrower memory entry = Borrower(amount, currDate);
-		balance[borrower] = entry;
+		balance[borrower] = Borrower(amount, currDate);
 		// keep track of all our loans
 		outstandingBalance += amount;
 	}
@@ -40,16 +39,14 @@ contract Storage {
 	// It is not optimal as of now to have to target each address individually but it
 	// demonstrates the principle.
 	function updateBorrower(address borrower) public returns (uint) {
-		uint debt = balance[borrower].amount;
-		uint fromDate = balance[borrower].fromDate;
+		Borrower storage b = balance[borrower];
+		uint debt = b.amount;
+		uint fromDate = b.fromDate;
 		uint actualDate = block.timestamp;
 		uint newDebt = ICalculateLoan(calculatorAddr).calculateInterestFrom(debt, fromDate, actualDate);
 		if (newDebt > debt) {
 			balance[borrower].amount = newDebt;
-			return newDebt;
 		}
-
-		return 0;
 	}
 
 
