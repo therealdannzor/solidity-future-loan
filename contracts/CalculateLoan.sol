@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.12;
 
 contract CalculateLoan {
 	address public owner;
@@ -8,7 +8,7 @@ contract CalculateLoan {
 	// variable interest rate (%) p.a. in basis points
 	uint public annual_rate;
 
-	constructor() public {
+	constructor() {
 		owner = msg.sender;
 		contractAddr = address(this);
 	}
@@ -44,23 +44,23 @@ contract CalculateLoan {
 		return annual_rate;
 	}
 
-	function calculateInterestFrom(uint principal, uint loanStartDate, uint loanEnd) external returns (uint) {
+	function calculateNewDebt(uint principal, uint loanStartDate, uint loanEnd) public view returns (uint) {
 		uint dummyScalingFactor = 10 ** 12; // due to no floats
 		uint delta = loanEnd - loanStartDate;
-		uint timeSinceInMinutes = delta / 60;
+		uint timeSinceInHours = delta / 3600;
 		
 		uint result = principal * dummyScalingFactor;
 		// not the most efficient gas wise
-		for (uint i=0; i < timeSinceInMinutes; i++) {
-			result += simpleInterestPerMin(result);
+		for (uint i=0; i < timeSinceInHours; i++) {
+			result += simpleInterestPerHour(result);
 		}
 		return result / dummyScalingFactor;
 	}
 
 	// simpleDailyInterest calculates the accrued minutely interest
-	function simpleInterestPerMin(uint principal) private view returns (uint) {
-		// denominator: minutes per year and normalize rate to percentage
-		return principal * annual_rate / (60 * 24 * 360 * 10000);
+	function simpleInterestPerHour(uint principal) private view returns (uint) {
+		// denominator: hours per year and normalize rate to percentage
+		return principal * annual_rate / (24 * 360 * 10000);
 	}
 
 }
