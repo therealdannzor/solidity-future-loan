@@ -44,7 +44,8 @@ contract CalculateLoan {
 		return annual_rate;
 	}
 
-	function calculateNewDebt(uint principal, uint loanStartDate, uint loanEnd) public view returns (uint) {
+	function calculateNewDebt(uint principal, uint loanStartDate, uint loanEnd)
+	external view returns (uint) {
 		uint dummyScalingFactor = 10 ** 12; // due to no floats
 		uint delta = loanEnd - loanStartDate;
 		uint timeSinceInHours = delta / 3600;

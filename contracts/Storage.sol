@@ -2,8 +2,8 @@
 pragma solidity ^0.8.12;
 
 interface ICalculateLoan {
-	function calculateInterestFrom(uint principal, uint loanStartDate, uint loanEnd)
-	external returns (uint);
+	function calculateNewDebt(uint principal, uint loanStartDate, uint loanEnd)
+	external view returns (uint);
 
 	function getRate() external view returns (uint);
 
@@ -43,7 +43,7 @@ contract Storage {
 		uint debt = b.amount;
 		uint fromDate = b.fromDate;
 		uint actualDate = block.timestamp;
-		uint newDebt = ICalculateLoan(calculatorAddr).calculateInterestFrom(debt, fromDate, actualDate);
+		uint newDebt = ICalculateLoan(calculatorAddr).calculateNewDebt(debt, fromDate, actualDate);
 		if (newDebt > debt) {
 			balance[borrower].amount = newDebt;
 		}
