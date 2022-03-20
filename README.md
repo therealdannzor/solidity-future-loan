@@ -21,6 +21,12 @@ Interest accrues on a debt:
 
 <img src="assets/accruedInterest.png">
 
+### Testing
+
+This project uses [Truffle](https://trufflesuite.com/) and [ganache](https://github.com/trufflesuite/ganache/).
+
+Tests can be run by starting a `ganache` instance (mock server) and then calling `truffle test`.
+
 ### Dependencies
 
 Nothing spicy, only the ones needed for a basic project.
