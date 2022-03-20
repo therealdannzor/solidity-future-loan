@@ -15,12 +15,14 @@ Deploy `CalculateLoan.sol` and obtain the contract address. Now deploy `Storage.
 
 The calculator contract on etherscan: [0x7d282d02](https://ropsten.etherscan.io/address/0x7d282d025b1af87d43408fb381a5514c5573162e)
 
-Set the rate of the live contract to 30%:
+Set the annual rate of the live contract to 30%:
+
 <img src="assets/setInterestRateLiveContract.png">
 
 The storage contract on etherscan: [0x70952ac6](https://ropsten.etherscan.io/address/0x70952ac60b4d4ea21b8c4c770ce2c170861a9b62)
 
 An hour later, the storage records a change in debt:
+
 <img src="assets/debtAfterAnHourLiveContract.png">
 
 ### Testing
